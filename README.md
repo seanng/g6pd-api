@@ -9,12 +9,16 @@ This is a sample API built with Hono and Deno, structured similarly to NestJS pr
 ├── deno.json
 ├── deno.lock
 ├── README.md
-└── src
+├── docs/
+│   └── README.md     # Entry point for detailed documentation
+└── src/
     ├── main.ts         # Main application entry point
-    ├── routes          # Contains route definitions
-    │   └── hello.route.ts
-    └── services        # Contains business logic/services
-        └── hello.service.ts
+    └── modules/        # Feature modules directory
+        └── health/     # Health check module
+            ├── health.route.ts
+            ├── health.route.test.ts
+            ├── health.service.ts
+            └── health.service.test.ts
 ```
 
 ## Getting Started
@@ -42,4 +46,14 @@ This is a sample API built with Hono and Deno, structured similarly to NestJS pr
 ## Available Routes
 
 - `GET /`: Returns "Welcome to the API!"
-- `GET /hello`: Returns "Hello from Service!"
+- `GET /health`: Returns a JSON object with the application's health status, including timestamp, version (deployment ID on Deno Deploy), and dependency status. Example response:
+  ```json
+  {
+    "status": "UP",
+    "timestamp": "2023-11-01T12:00:00.000Z",
+    "version": "deployment-id-or-dev",
+    "dependencies": {
+      "exampleDependency": "UP"
+    }
+  }
+  ```

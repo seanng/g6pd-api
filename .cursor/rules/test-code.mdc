@@ -1,0 +1,18 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+When applying code changes (modifying existing code or adding new features) in this Deno/Hono project, adhere to the following testing practices:
+
+1.  **Identify Affected Tests:** Determine if existing tests cover the code being modified (e.g., service logic, helper functions, Hono route handlers).
+2.  **Update Existing Tests:** If relevant tests exist, update them to accurately reflect the changes in logic, function signatures, expected outputs, or component interactions. Ensure assertions (likely using `deno_std/testing/asserts.ts`) remain valid.
+3.  **Create New Tests:**
+    *   If the changes introduce new functionality (e.g., a new service method, a new route), create new tests to cover the core logic.
+    *   If existing code being modified lacks test coverage, add tests for the affected parts.
+    *   For new Hono routes, consider testing the handler logic, possibly using helpers like `hono/testing` to simulate requests and check responses.
+4.  **Testing Scope:**
+    *   **Unit Tests:** Focus on testing individual functions, methods (especially in services), or classes in isolation. Use Deno's standard library for mocking or stubbing dependencies where appropriate.
+    *   **Integration Tests:** Consider adding integration tests if the changes significantly affect the interaction between Hono routes and their corresponding services.
+5.  **Test Location & Naming:** Follow existing project conventions for test file location (e.g., a top-level `tests/` directory or colocated files). The standard Deno convention is to use `_test.ts` or `.test.ts` suffixes (e.g., `health.service.test.ts`). If no convention exists, prefer colocated `*.test.ts` files.
+6.  **Coverage:** Aim for tests that cover the primary logic paths and important edge cases of the modified or new code. Tests should be runnable via the `deno test` command.

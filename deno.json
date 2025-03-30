@@ -1,9 +1,12 @@
 {
   "imports": {
-    "hono": "jsr:@hono/hono@^4.7.5"
+    "hono": "jsr:@hono/hono@^4.7.5",
+    "@/": "./src/modules/"
   },
   "tasks": {
-    "start": "deno run --allow-net src/main.ts"
+    "start": "deno run --allow-net src/main.ts",
+    "test": "deno test --allow-env",
+    "dev": "deno run --allow-net --watch src/main.ts"
   },
   "compilerOptions": {
     "jsx": "precompile",
