@@ -15,21 +15,9 @@ Deno.test('ParseService', async (t) => {
   await t.step('processImage should throw if image is missing', async () => {
     parseService = new ParseService();
     await assertRejects(
-      () => parseService.processImage(undefined as unknown as File, 'prompt'),
+      () => parseService.processImage(undefined as unknown as File),
       Error,
       'Image file is required'
-    );
-  });
-
-  await t.step('processImage should throw if prompt is missing', async () => {
-    parseService = new ParseService();
-    const fakeFile = new File([new Uint8Array([1, 2, 3])], 'test.jpg', {
-      type: 'image/jpeg',
-    });
-    await assertRejects(
-      () => parseService.processImage(fakeFile, undefined as unknown as string),
-      Error,
-      'Prompt is required'
     );
   });
 
@@ -40,11 +28,10 @@ Deno.test('ParseService', async (t) => {
       const fakeFile = new File([new Uint8Array([1, 2, 3])], 'test.jpg', {
         type: 'image/jpeg',
       });
-      const prompt = 'Test prompt';
-      const result = await parseService.processImage(fakeFile, prompt);
+      const result = await parseService.processImage(fakeFile);
       assertEquals(
         result,
-        `Parsed result for prompt: "${prompt}" (image size: 3 bytes)`
+        `Parsed result for prompt: "Extract the text from the image" (image size: 3 bytes)`
       );
     }
   );

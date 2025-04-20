@@ -1,7 +1,9 @@
 {
   "imports": {
+    "@hono/zod-validator": "npm:@hono/zod-validator@^0.4.3",
     "hono": "jsr:@hono/hono@^4.7.5",
-    "@/": "./src/modules/"
+    "@/": "./src/modules/",
+    "zod": "npm:zod@^3.24.3"
   },
   "tasks": {
     "start": "deno run --allow-net src/main.ts",

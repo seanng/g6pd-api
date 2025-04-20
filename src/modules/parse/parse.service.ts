@@ -80,25 +80,18 @@ export class ParseService {
 
   /**
    * Processes an image and prompt by sending them to the Gemini API.
-   * @param image The image file to parse.
-   * @param prompt The text prompt to accompany the image.
+   * @param image The image to parse.
    * @returns A promise resolving to the text response from the Gemini API.
    */
-  async processImage(image: File, prompt: string): Promise<string> {
-    if (!image) {
+  async processImage(image: File | FormDataEntryValue): Promise<string> {
+    if (!image || !(image instanceof File)) {
       throw new HTTPException(400, { message: 'Image file is required' });
-    }
-    // It's good practice to also check the file type/size here if needed
-    // e.g., if (!image.type.startsWith('image/')) { ... }
-    // e.g., if (image.size > MAX_SIZE) { ... }
-
-    if (!prompt) {
-      throw new HTTPException(400, { message: 'Prompt is required' });
     }
 
     try {
       const imageData = await image.arrayBuffer();
       // In a real scenario, you might pass image.type to callGeminiApi
+      const prompt = 'Extract the text from the image';
       const result = await this.callGeminiApi(imageData, prompt);
       return result;
     } catch (error) {

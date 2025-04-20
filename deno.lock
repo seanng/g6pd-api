@@ -1,11 +1,28 @@
 {
   "version": "4",
   "specifiers": {
-    "jsr:@hono/hono@^4.7.5": "4.7.5"
+    "jsr:@hono/hono@^4.7.5": "4.7.5",
+    "npm:@hono/zod-validator@~0.4.3": "0.4.3_hono@4.7.7_zod@3.24.3",
+    "npm:zod@^3.24.3": "3.24.3"
   },
   "jsr": {
     "@hono/hono@4.7.5": {
       "integrity": "36a7e1b3db8a58e5dc2bd36a76be53346f0966e04c24c635c4d6f58875575b0a"
+    }
+  },
+  "npm": {
+    "@hono/zod-validator@0.4.3_hono@4.7.7_zod@3.24.3": {
+      "integrity": "sha512-xIgMYXDyJ4Hj6ekm9T9Y27s080Nl9NXHcJkOvkXPhubOLj8hZkOL8pDnnXfvCf5xEE8Q4oMFenQUZZREUY2gqQ==",
+      "dependencies": [
+        "hono",
+        "zod"
+      ]
+    },
+    "hono@4.7.7": {
+      "integrity": "sha512-2PCpQRbN87Crty8/L/7akZN3UyZIAopSoRxCwRbJgUuV1+MHNFHzYFxZTg4v/03cXUm+jce/qa2VSBZpKBm3Qw=="
+    },
+    "zod@3.24.3": {
+      "integrity": "sha512-HhY1oqzWCQWuUqvBFnsyrtZRhyPeR7SUGv+C4+MsisMuVfSPx8HpwWqH8tRahSlt6M3PiFAcoeFhZAqIXTxoSg=="
     }
   },
   "remote": {
@@ -46,7 +63,9 @@
   },
   "workspace": {
     "dependencies": [
-      "jsr:@hono/hono@^4.7.5"
+      "jsr:@hono/hono@^4.7.5",
+      "npm:@hono/zod-validator@~0.4.3",
+      "npm:zod@^3.24.3"
     ]
   }
 }
