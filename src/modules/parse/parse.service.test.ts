@@ -1,0 +1,51 @@
+/**
+ * Test suite for the ParseService.
+ * @module
+ */
+
+import {
+  assertEquals,
+  assertRejects,
+} from 'https://deno.land/std@0.224.0/assert/mod.ts';
+import { ParseService } from './parse.service.ts';
+
+Deno.test('ParseService', async (t) => {
+  let parseService: ParseService;
+
+  await t.step('processImage should throw if image is missing', async () => {
+    parseService = new ParseService();
+    await assertRejects(
+      () => parseService.processImage(undefined as unknown as File, 'prompt'),
+      Error,
+      'Image file is required'
+    );
+  });
+
+  await t.step('processImage should throw if prompt is missing', async () => {
+    parseService = new ParseService();
+    const fakeFile = new File([new Uint8Array([1, 2, 3])], 'test.jpg', {
+      type: 'image/jpeg',
+    });
+    await assertRejects(
+      () => parseService.processImage(fakeFile, undefined as unknown as string),
+      Error,
+      'Prompt is required'
+    );
+  });
+
+  await t.step(
+    'processImage should return placeholder result for valid input',
+    async () => {
+      parseService = new ParseService();
+      const fakeFile = new File([new Uint8Array([1, 2, 3])], 'test.jpg', {
+        type: 'image/jpeg',
+      });
+      const prompt = 'Test prompt';
+      const result = await parseService.processImage(fakeFile, prompt);
+      assertEquals(
+        result,
+        `Parsed result for prompt: "${prompt}" (image size: 3 bytes)`
+      );
+    }
+  );
+});

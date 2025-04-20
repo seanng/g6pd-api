@@ -4,13 +4,15 @@ globs:
 alwaysApply: true
 ---
 
-# Your rule content
+## Reading documentation
 
 - Before applying a code change, if the question in hand requires a deeper understanding of the codebase, please refer to the documentation code for better context. Documentation will be listed in the following 4 key areas:
   1. Root [README.md](mdc:README.md) is focused on getting started, running the project, and a high-level overview of the main API endpoints.
   2. Code comments (TSDoc) directly above functions, classes, methods, interfaces, and complex logic blocks, keeping documentation tightly coupled with the code it describes.
   3. Module/Feature READMEs inside each directory within the `src/` folder documents the purpose, design, and usage of a specific module or feature area in more detail than code comments allow
   4. A top-level directory (alongside `src/`) called `docs/` specifically for documentation files. This can include architectural overviews, design decisions, etc... to centralize non-code-specific documentation. 
+
+## Updating documentation
 
 - After applying a code change, please ask if you should update the documentation. This is because I need to first review the code before you write documentation. If I say yes, please perform the following flow for documenting code:
   1. Always generate TSDoc comments for all functions, classes, methods, interfaces, and exported constants. Ensure comments explain the purpose, parameters (@param), and return values (@returns) where applicable. 
