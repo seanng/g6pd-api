@@ -1,3 +1,4 @@
+import 'https://deno.land/std@0.224.0/dotenv/load.ts';
 import { Hono } from 'hono';
 import { healthRoute } from '@/health/health.route.ts';
 import { parseRoute } from '@/parse/parse.route.ts';
@@ -5,10 +6,7 @@ import { parseRoute } from '@/parse/parse.route.ts';
 // Initialize the Hono app
 const app = new Hono();
 
-// Mount the health check route under /health
 app.route('/health', healthRoute);
-
-// Mount the parse route under /parse
 app.route('/parse', parseRoute);
 
 // Define a simple root route

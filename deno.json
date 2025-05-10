@@ -6,9 +6,9 @@
     "zod": "npm:zod@^3.24.3"
   },
   "tasks": {
-    "start": "deno run --allow-net src/main.ts",
+    "start": "deno run --allow-net --allow-env --allow-read src/main.ts",
     "test": "deno test --allow-env",
-    "dev": "deno run --allow-net --watch src/main.ts"
+    "dev": "deno run --allow-net --allow-env --allow-read --watch src/main.ts"
   },
   "compilerOptions": {
     "jsx": "precompile",

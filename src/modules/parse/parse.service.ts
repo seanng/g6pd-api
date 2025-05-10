@@ -1,4 +1,50 @@
 import { HTTPException } from 'hono/http-exception';
+import { encodeBase64 } from 'https://deno.land/std@0.224.0/encoding/base64.ts';
+
+const PROMPT = `
+You are an intelligent image parser that extracts text from an image consisting of an ingredient label. You are able to support multiple languages.
+
+You must strictly follow this exact format in your response:
+success
+---
+[empty line if success, or error message if error]
+---
+[parsed text]
+
+DO NOT include any explanations, annotations, or additional text.
+
+- The first line must be either "success" or "error". It would only be "success" if none of the "Error Conditions" are met.
+- The second line must be exactly "---" (three hyphens).
+- The third line must be the error message if first line is "error", or must be blank if first line is "success".
+- The fourth line must be exactly "---" (three hyphens).
+- The fifth line and beyond must contain the parsed text from the ingredient label.
+
+Error Conditions:
+- There is no text in the image
+- Unable to identify an "ingredients section"
+- Able to identify an "ingredients section", but the section is cut off
+- Text is too blurry
+- Unsupported language
+`;
+
+const RETRY_PROMPT = `
+Your previous response did not follow the required format. Please respond EXACTLY as instructed:
+
+success
+---
+[empty line if success, or error message if error]
+---
+[parsed text]
+
+The format must have:
+1. First line: "success" or "error"
+2. Second line: "---" (three hyphens)
+3. Third line: Error message or blank line
+4. Fourth line: "---" (three hyphens)
+5. Fifth line and beyond: Extracted text from the ingredient label
+
+DO NOT include any explanations, annotations, or additional formatting.
+`;
 
 /**
  * Service responsible for handling image parsing requests via Gemini API.
@@ -18,26 +64,15 @@ export class ParseService {
     imageData: ArrayBuffer,
     prompt: string
   ): Promise<string> {
-    console.log('Calling Gemini API (placeholder)', {
-      prompt,
-      imageSize: imageData.byteLength,
-    });
-    // Replace with actual API call
-    // Example using fetch:
-    /*
     const apiKey = Deno.env.get('GOOGLE_API_KEY');
     if (!apiKey) {
       throw new Error('GOOGLE_API_KEY environment variable not set');
     }
-    const API_ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/gemini-pro-vision:generateContent?key=${apiKey}`;
+    const model = 'gemini-2.0-flash-lite';
+    const API_ENDPOINT = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
 
-    // Determine MIME type (you might need a library or more logic for this)
-    // For simplicity, assuming JPEG here. You should get this from the File object.
-    const mimeType = 'image/jpeg';
-
-    // Convert ArrayBuffer to base64
-    const base64Image = btoa(String.fromCharCode(...new Uint8Array(imageData)));
-
+    // Convert ArrayBuffer to base64 using Deno's encodeBase64 function
+    const base64Image = encodeBase64(new Uint8Array(imageData));
     const requestBody = {
       contents: [
         {
@@ -45,7 +80,7 @@ export class ParseService {
             { text: prompt },
             {
               inline_data: {
-                mime_type: mimeType,
+                mime_type: 'image/jpeg',
                 data: base64Image,
               },
             },
@@ -56,26 +91,22 @@ export class ParseService {
 
     const response = await fetch(API_ENDPOINT, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(requestBody),
     });
 
     if (!response.ok) {
       const errorBody = await response.text();
       console.error('Gemini API Error:', response.status, errorBody);
-      throw new HTTPException(500, { message: `Gemini API error: ${response.statusText}` });
+      throw new HTTPException(500, {
+        message: `Gemini API error: ${response.statusText}`,
+      });
     }
 
     const result = await response.json();
-    // Extract the text content from the response (structure might vary)
-    return result?.candidates?.[0]?.content?.parts?.[0]?.text || 'No content generated.';
-    */
 
-    // Placeholder response
-    await new Promise((resolve) => setTimeout(resolve, 500)); // Simulate network delay
-    return `Parsed result for prompt: "${prompt}" (image size: ${imageData.byteLength} bytes)`;
+    const text = result.candidates[0].content.parts[0].text;
+    return text;
   }
 
   /**
@@ -90,10 +121,27 @@ export class ParseService {
 
     try {
       const imageData = await image.arrayBuffer();
-      // In a real scenario, you might pass image.type to callGeminiApi
-      const prompt = 'Extract the text from the image';
-      const result = await this.callGeminiApi(imageData, prompt);
-      return result;
+      // First attempt with standard prompt
+      let responseText = await this.callGeminiApi(imageData, PROMPT);
+      let result = this.parseResponseText(responseText);
+
+      // If the format is invalid, retry with clearer instructions
+      if (result.error === 'Invalid response format from AI') {
+        console.log(
+          'Detected invalid format, retrying with clearer instructions'
+        );
+        responseText = await this.callGeminiApi(
+          imageData,
+          PROMPT + RETRY_PROMPT
+        );
+        result = this.parseResponseText(responseText);
+      }
+
+      if (!result.success) {
+        throw new HTTPException(400, { message: result.error });
+      }
+
+      return result.text;
     } catch (error) {
       console.error('Error processing image parse request:', error);
       if (error instanceof HTTPException) {
@@ -104,5 +152,31 @@ export class ParseService {
         cause: error,
       });
     }
+  }
+
+  private parseResponseText(responseText: string): {
+    success: boolean;
+    error: string;
+    text: string;
+  } {
+    const sections = responseText.split('---');
+    if (sections.length < 3) {
+      return {
+        success: false,
+        error: 'Invalid response format from AI',
+        text: '',
+      };
+    }
+
+    const statusLine = sections[0].trim();
+    const isSuccess = statusLine === 'success';
+    const error = sections[1].trim();
+    const text = sections[2].trim();
+
+    return {
+      success: isSuccess,
+      error: error || 'Unknown error',
+      text,
+    };
   }
 }

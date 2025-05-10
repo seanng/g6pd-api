@@ -4,12 +4,10 @@ import { HTTPException } from 'hono/http-exception';
 import { z } from 'zod';
 import { zValidator } from '@hono/zod-validator';
 
-type ParseEnv = { Bindings: {}; Variables: {} };
-
 /**
  * Hono router instance for handling image parsing requests.
  */
-export const parseRoute = new Hono<ParseEnv>();
+export const parseRoute = new Hono();
 
 const parseService = new ParseService();
 
@@ -40,22 +38,22 @@ const multipartSchema = z.object({
  */
 parseRoute.post(
   '/',
-  zValidator('form' as any, multipartSchema, (result, c) => {
+  zValidator('form', multipartSchema, (result) => {
     if (!result.success) {
       const errorMessage = result.error.errors
         .map((err: any) => err.message)
         .join(', ');
       throw new HTTPException(400, { message: errorMessage });
     }
-  }),
+  }) as any,
   async (c) => {
     try {
-      const { image } = c.req.valid('form' as any) as { image: File };
+      const { image } = (c as any).req.valid('form') as { image: File };
 
       // Use the service instance to process the image
-      const result = await parseService.processImage(image);
+      const data = await parseService.processImage(image);
 
-      return c.json({ success: true, data: result });
+      return c.json({ success: true, data });
     } catch (error: unknown) {
       console.error('Error in /parse route:', error);
       if (error instanceof HTTPException) {

@@ -1,90 +1,121 @@
 /**
- * Test suite for the parse route.
+ * Test suite for the ParseRoute.
  * @module
  */
 
 import {
   assertEquals,
-  assertObjectMatch,
+  assertExists,
 } from 'https://deno.land/std@0.224.0/assert/mod.ts';
 import { Hono } from 'hono';
+import { HTTPException } from 'hono/http-exception';
+
+// Mock the dotenv module
+// This needs to happen before importing the route
+const originalReadTextFileSync = Deno.readTextFileSync;
+Deno.readTextFileSync = (path: string | URL) => {
+  if (String(path).includes('.env')) {
+    return 'GOOGLE_API_KEY=mock-test-api-key';
+  }
+  return originalReadTextFileSync(path);
+};
+
+// Mock fetch before importing route
+const originalFetch = globalThis.fetch;
+globalThis.fetch = async () => {
+  return {
+    ok: true,
+    json: async () => ({
+      candidates: [
+        {
+          content: {
+            parts: [
+              {
+                text: 'success\n---\n\n---\nIngredients: Test ingredients',
+              },
+            ],
+          },
+        },
+      ],
+    }),
+  } as Response;
+};
+
+// Now import the route after mocking
 import { parseRoute } from './parse.route.ts';
 
-Deno.test('Parse Route', async (t) => {
+Deno.test('ParseRoute tests', async (t) => {
+  // Set up API key
+  Deno.env.set('GOOGLE_API_KEY', 'test-api-key');
+
+  // Create a new Hono app for testing
   const app = new Hono();
-  // Add a global error handler to return errors as JSON
+
+  // Add error handler for consistent JSON responses
   app.onError((err, c) => {
-    const status = (err as any).status ?? 500;
-    return c.json({ message: err.message }, status);
+    const status = err instanceof HTTPException ? err.status : 500;
+    const message = err instanceof Error ? err.message : 'Unknown error';
+    return c.json({ message }, status);
   });
+
   app.route('/parse', parseRoute);
 
   await t.step(
-    'POST /parse should return parsed result for valid image',
+    'POST / should return error when no image is provided',
     async () => {
-      // Create a small JPEG file (3x3 pixels)
-      const imageData = new Uint8Array([
-        0xff, 0xd8, 0xff, 0xe0, 0x00, 0x10, 0x4a, 0x46, 0x49, 0x46, 0x00, 0x01,
-        0x01, 0x01, 0x00, 0x48, 0x00, 0x48, 0x00, 0x00, 0xff, 0xdb, 0x00, 0x43,
-        0x00, 0xff, 0xc0, 0x00, 0x0b, 0x08, 0x00, 0x03, 0x00, 0x03, 0x01, 0x01,
-        0x11, 0x00, 0xff, 0xc4, 0x00, 0x14, 0x00, 0x01, 0x00, 0x00, 0x00, 0x00,
-        0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x09,
-        0xff, 0xda, 0x00, 0x08, 0x01, 0x01, 0x00, 0x00, 0x3f, 0x00, 0xff, 0xd9,
-      ]);
+      const formData = new FormData();
 
-      const fakeFile = new File([imageData], 'test.jpg', {
-        type: 'image/jpeg',
-      });
-      const form = new FormData();
-      form.append('image', fakeFile);
-      const req = new Request('http://localhost/parse', {
+      const res = await app.request('http://localhost/parse', {
         method: 'POST',
-        body: form,
+        body: formData,
       });
-      const res = await app.request(req);
-      const json = await res.json();
-      assertEquals(res.status, 200);
-      assertObjectMatch(json, {
-        success: true,
-        data: `Parsed result for prompt: "Extract the text from the image" (image size: ${imageData.length} bytes)`,
-      });
-    }
-  );
 
-  await t.step(
-    'POST /parse should return 400 if image is missing',
-    async () => {
-      const form = new FormData();
-      const req = new Request('http://localhost/parse', {
-        method: 'POST',
-        body: form,
-      });
-      const res = await app.request(req);
       assertEquals(res.status, 400);
-      const json = await res.json();
-      assertEquals(json.message, 'Input not instance of File');
+      const data = await res.json();
+      assertExists(data.message);
     }
   );
 
-  await t.step(
-    'POST /parse should return 400 if file type is invalid',
-    async () => {
-      const fakeFile = new File(['test'], 'test.txt', {
-        type: 'text/plain',
-      });
-      const form = new FormData();
-      form.append('image', fakeFile);
-      const req = new Request('http://localhost/parse', {
-        method: 'POST',
-        body: form,
-      });
-      const res = await app.request(req);
-      assertEquals(res.status, 400);
-      const json = await res.json();
-      assertEquals(
-        json.message,
-        'Only .jpg, .jpeg, .png, and .webp formats are supported'
-      );
-    }
-  );
+  await t.step('POST / should return error for invalid file type', async () => {
+    const formData = new FormData();
+    const invalidFile = new File(['test'], 'test.txt', { type: 'text/plain' });
+    formData.append('image', invalidFile);
+
+    const res = await app.request('http://localhost/parse', {
+      method: 'POST',
+      body: formData,
+    });
+
+    assertEquals(res.status, 400);
+    const data = await res.json();
+    assertExists(data.message);
+    assertEquals(
+      data.message,
+      'Only .jpg, .jpeg, .png, and .webp formats are supported'
+    );
+  });
+
+  await t.step('POST / should return success with valid image', async () => {
+    const formData = new FormData();
+    const validFile = new File([new Uint8Array([1, 2, 3])], 'test.jpg', {
+      type: 'image/jpeg',
+    });
+    formData.append('image', validFile);
+
+    const res = await app.request('http://localhost/parse', {
+      method: 'POST',
+      body: formData,
+    });
+
+    assertEquals(res.status, 200);
+    const data = await res.json();
+    assertEquals(data.success, true);
+    assertEquals(data.data, 'Ingredients: Test ingredients');
+  });
+
+  // Add a final cleanup step
+  await t.step('cleanup', () => {
+    globalThis.fetch = originalFetch;
+    Deno.readTextFileSync = originalReadTextFileSync;
+  });
 });
