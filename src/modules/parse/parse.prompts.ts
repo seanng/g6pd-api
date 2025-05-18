@@ -29,153 +29,929 @@ Provide ONLY the raw JSON object.
 `;
 
 const HARMFUL_INGREDIENTS = `
-1. 2-Naphthol (Beta-Naphthol)
-2. Acetanilide (Acetanilid)
-3. Acetazolamide
-4. Acetophenetidin (Phenacetin)
-5. Acetylphenylhydrazine (2-Phenylacetohydrazine)
-6. Aldesulfone Sodium (Sulfoxone)
-7. Aminophenazone (Aminopyrine, Pyramidon, Amidopyrine)
-8. Antazoline (Antistine)
-9. Antipyrine (Phenazone)
-10. Arginine (2-Amino-5-guanidinopentanoic acid)
-11. Arsine
-12. Ascorbic Acid (Vitamin C)
-13. Azathioprine *(use with caution)*
-14. Baclofen *(use with caution)*
-15. Bean of St. Ignatius (Strychnos ignatii)
-16. Benorilate
-17. Benzexolo
-18. Brinzolamide
-19. Bupivacaine
-20. Calcium Carboxylate
-21. Carbutamide
-22. Chloramphenicol
-23. Chloroquine
-24. Chloroquine + Proguanil
-25. Ciprofloxacin
-26. Clorguanidine (Proguanil)
-27. Colchicine
-28. Dapsone (Diaphenylsulfone)
-29. Diethylamine
-30. Dimenidrinato
-31. Dimercaprol
-32. Diphenhydramine (Difenilhydramine)
-33. Dopamine
-34. Dorzolamide
-35. Doxorubicin
-36. Enoxacin
-37. Epirubicin
-38. Flumequine
-39. Furazolidone
-40. Glibenclamide
-41. Glibornuride
-42. Gliclazide
-43. Glimepiride
-44. Glipizide
-45. Glucosulfone (Glucosulfone Sodium)
-46. Hydroxychloroquine
-47. Ibuprofen
-48. Indigofera Tinctoria
-49. Isobutyl Nitrite
-50. Isoniazid
-51. Lawsone Inermis
-52. Levodopa
-53. Levofloxacin
-54. Lomefloxacin
-55. Mefloquine
-56. Menadiol Sodium Sulfate (Vitamin K4 Sodium Sulfate)
-57. Menadione (Menaphtone, Vitamin K3)
-58. Menadione Sodium Bisulfite (Vitamin K3 Sodium Bisulfite)
-59. Mepacrine (Quinacrine)
-60. Mesalazine (5-Aminosalicylic Acid, Paraminosalicylic Acid)
-61. Metamizole
-62. Methylthioninium Chloride (Methylene Blue)
-63. Morpholine
-64. Moxifloxacin
-65. Nalidixic Acid
-66. Naphthalene (Pure Naphthalene, Naphtalin)
-67. Niridazole
-68. Nitric Oxide
-69. Nitrofural (Nitrofurazone)
-70. Nitrofurantoin
-71. Nitroglycerin
-72. Noramidopyrine
-73. Norfloxacin
-74. O-Acetylsalicylic Acid (Acetylsalicylic Acid, Aspirin)
+- 2-Naphthol (Beta-Naphthol)
+- Acetanilide (Acetanilid)
+- Acetazolamide
+- Acetophenetidin (Phenacetin)
+- Acetylphenylhydrazine (2-Phenylacetohydrazine)
+- Aldesulfone Sodium (Sulfoxone)
+- Aminophenazone (Aminopyrine, Pyramidon, Amidopyrine)
+- Antazoline (Antistine)
+- Antipyrine (Phenazone)
+- Arginine (2-Amino-5-guanidinopentanoic acid)
+- Arsine
+- Ascorbic Acid (Vitamin C)
+- Azathioprine *(use with caution)*
+- Baclofen *(use with caution)*
+- Bean of St. Ignatius (Strychnos ignatii)
+- Benorilate
+- Benzexolo
+- Brinzolamide
+- Bupivacaine
+- Calcium Carboxylate
+- Carbutamide
+- Chloramphenicol
+- Chloroquine
+- Chloroquine + Proguanil
+- Ciprofloxacin
+- Clorguanidine (Proguanil)
+- Colchicine
+- Dapsone (Diaphenylsulfone)
+- Diethylamine
+- Dimenidrinato
+- Dimercaprol
+- Diphenhydramine (Difenilhydramine)
+- Dopamine
+- Dorzolamide
+- Doxorubicin
+- Enoxacin
+- Epirubicin
+- Flumequine
+- Furazolidone
+- Glibenclamide
+- Glibornuride
+- Gliclazide
+- Glimepiride
+- Glipizide
+- Glucosulfone (Glucosulfone Sodium)
+- Hydroxychloroquine
+- Ibuprofen
+- Indigofera Tinctoria
+- Isobutyl Nitrite
+- Isoniazid
+- Lawsone Inermis
+- Levodopa
+- Levofloxacin
+- Lomefloxacin
+- Mefloquine
+- Menadiol Sodium Sulfate (Vitamin K4 Sodium Sulfate)
+- Menadione (Menaphtone, Vitamin K3)
+- Menadione Sodium Bisulfite (Vitamin K3 Sodium Bisulfite)
+- Mepacrine (Quinacrine)
+- Mesalazine (5-Aminosalicylic Acid, Paraminosalicylic Acid)
+- Metamizole
+- Methylthioninium Chloride (Methylene Blue)
+- Morpholine
+- Moxifloxacin
+- Nalidixic Acid
+- Naphthalene (Pure Naphthalene, Naphtalin)
+- Niridazole
+- Nitric Oxide
+- Nitrofural (Nitrofurazone)
+- Nitrofurantoin
+- Nitroglycerin
+- Noramidopyrine
+- Norfloxacin
+- O-Acetylsalicylic Acid (Acetylsalicylic Acid, Aspirin)
    - Combinations:
      - O-Acetylsalicylic Acid + Acetanilide
      - O-Acetylsalicylic Acid + Ascorbic Acid
      - O-Acetylsalicylic Acid + Paracetamol
-75. Ofloxacin
-76. Oxidase, Urate (Urate Oxidase)
-77. Pamaquine
-78. Para-Aminobenzoic Acid (4-Aminobenzoic Acid)
-79. Paracetamol (Acetaminophen)
+- Ofloxacin
+- Oxidase, Urate (Urate Oxidase)
+- Pamaquine
+- Para-Aminobenzoic Acid (4-Aminobenzoic Acid)
+- Paracetamol (Acetaminophen)
    - Combinations:
      - Paracetamol + Propyphenazone
-80. Pefloxacin
-81. Pentaquine
-82. Phenazopyridine
-83. Phenylbutazone
-84. Phenytoin
-85. Phenylhydrazine
-86. Phytomenadione (Vitamin K1)
-87. Pipemidic Acid
-88. Pregabalin *(use with caution)*
-89. Prilocaine
-90. Primaquine
-91. Probenecid
-92. Procainamide
-93. Procainamide Hydrochloride
-94. Propylene Glycol
-95. Propyphenazone
-96. Pyrimethamine
-97. Quinidine
+- Pefloxacin
+- Pentaquine
+- Phenazopyridine
+- Phenylbutazone
+- Phenytoin
+- Phenylhydrazine
+- Phytomenadione (Vitamin K1)
+- Pipemidic Acid
+- Pregabalin *(use with caution)*
+- Prilocaine
+- Primaquine
+- Probenecid
+- Procainamide
+- Procainamide Hydrochloride
+- Propylene Glycol
+- Propyphenazone
+- Pyrimethamine
+- Quinidine
    - Combinations:
      - Quinidine + Phenylhydrazine
      - Quinidine + Quinine
-98. Quinine
-99. Rasburicase
-100. Sodium Nitroprusside
-101. Spiramycin
-102. Stibophen (2-(2-Oxido-3,5-Disulphonatophenoxy)-1,3,2-Benzodioxastibole-4-6-Disulphonate)
-103. Streptomycin
-104. Succimer
-105. Sulfacetamide
-106. Sulfacytine
-107. Sulfadiazine
-   - Combinations:
-     - Sulfadiazine + Trimethoprim
-108. Sulfadimidine
-109. Sulfadoxine
-110. Sulfafurazole (Sulfafurazone, Sulfisoxazole, Gantrisin)
-111. Sulfaguanidine
-112. Sulfamerazine
-113. Sulfamethizole
-114. Sulfamethoxazole
-115. Sulfamethoxypyridazine
-116. Sulfanilamide (Sulphanilamide)
-117. Sulfapyridine
-118. Sulfasalazine (Salazosulfapyridine, Salazopyrin)
-119. Sulfisoxazole (Gantrisin)
-120. Sulfoxone
-121. Thiamphenicol
-122. Thiazosulfone (Thiazolesulfone)
-123. Tiaprofenic Acid
-124. Tolonium Chloride (Toluidine Blue)
-125. Trihexyphenidyl (Benzhexol)
-126. Trimethoprim
-   - Combinations:
-     - Trimethoprim + Sulfamethoxazole
-127. Trinitrotoluene (2,4,6-Trinitrotoluene)
-128. Tripelennamine
+- Quinine
+- Rasburicase
+- Sodium Nitroprusside
+- Spiramycin
+- Stibophen (2-(2-Oxido-3,5-Disulphonatophenoxy)-1,3,2-Benzodioxastibole-4-6-Disulphonate)
+- Streptomycin
+- Succimer
+- Sulfacetamide
+- Sulfacytine
+- Sulfadiazine
+  - Combinations:
+    - Sulfadiazine + Trimethoprim
+- Sulfadimidine
+- Sulfadoxine
+- Sulfafurazole (Sulfafurazone, Sulfisoxazole, Gantrisin)
+- Sulfaguanidine
+- Sulfamerazine
+- Sulfamethizole
+- Sulfamethoxazole
+- Sulfamethoxypyridazine
+- Sulfanilamide (Sulphanilamide)
+- Sulfapyridine
+- Sulfasalazine (Salazosulfapyridine, Salazopyrin)
+- Sulfisoxazole (Gantrisin)
+- Sulfoxone
+- Thiamphenicol
+- Thiazosulfone (Thiazolesulfone)
+- Tiaprofenic Acid
+- Tolonium Chloride (Toluidine Blue)
+- Trihexyphenidyl (Benzhexol)
+- Trimethoprim
+  - Combinations: 
+    - Trimethoprim + Sulfamethoxazole
+- Trinitrotoluene (2,4,6-Trinitrotoluene)
+- Tripelennamine
+- Acacia
+- Aduki Bean
+- Adzuki Bean
+- Alfalfa and Alfalfa Sprouts
+- Anasazi Beans
+- Apios Americana
+- Appaloosa Bean
+- Arhar
+- Arhar Dal
+- Asparagus Bean
+- Asparagus Pea
+- Astragalus
+- Asuki Bean
+- Azufrado Bean
+- Azuki Bean
+- Baby Lima Bean
+- Bayo Bean
+- Beluga Black Lentil
+- Beluga Lentil
+- Bengal Gram
+- Bengal Bean
+- Black Bean
+- Black Azuki Bean
+- Black Beluga Lentil
+- Black Chickpeas
+- Black Eye Pea
+- Black Eyed Pea
+- Black Eyed Suzy
+- Black Gram
+- Black Lentil
+- Black Turtle Bean
+- Bodi
+- Bolita Bean
+- Bonavist Bean
+- Boonchi
+- Borlotti Bean
+- Boston Bean
+- Boston Navy Bean
+- Broad Bean
+- Brown Lentil
+- Brown Speckled Cow Bean
+- Buffalo Bean
+- Butterscotch Calypso Bean
+- Cabeca-de-frade
+- Calypso Bean
+- Canaria Bean
+- Canario Bean
+- Cannellini Bean
+- Carob and Carob Bean
+- Cassia
+- Ceci Bean
+- Chana Dal
+- Channa Dal
+- Chawli
+- Chepil
+- Chestnut Lima Bean
+- Chickpea
+- Chick-pea
+- Chili Bean
+- Chilke Urad
+- China Bean
+- Chinese Black Bean
+- Chinese Long Bean
+- Chinese Pea
+- Chinese Pea Pod
+- Chinese Snow Pea
+- Chiporro
+- Chole
+- Chowli Dal
+- Christmas Lima Bean
+- Cici Bean
+- Clover
+- Cluster Bean
+- Coco Bean
+- Coco Blanc Bean
+- Congo Bean
+- Congo Pea
+- Continental Lentil
+- Copaiba
+- Couhage
+- Cowage
+- Cowhage
+- Cowitch
+- Cowpea
+- Crab Eye Bean
+- Cranberry Bean
+- Crowder Pea
+- Dal (Lentils)
+- Daal
+- Dhaal
+- Dhal
+- Dhall
+- Dau Gok
+- Dow Gok
+- Dead Finish
+- Dermason Bean
+- Dolichos Pruriens
+- Dow See
+- Dragon Tongue Bean
+- Dried Bean
+- Dried Pea
+- Edamame
+- Edible Podded Pea
+- Egyptian Bean
+- Egyptian Lentil
+- Egyptian Pea
+- Egyptian White Broad Bean
+- English Bean
+- European Soldier Bean
+- Eye Of The Goat Bean
+- Faba Bean aka Fava Bean
+- Fagioli
+- Fagiolo Romano
+- Farnese Wattle
+- Fava-coceira
+- Fayot
+- Fazolia Bean
+- Feijao Bean
+- Fenugreek
+- Fermented Black Bean
+- Feve
+- Field Pea
+- Flageolet
+- Fool
+- Four Angled Bean
+- Forellen Bean
+- Foul
+- French Bean
+- French Green Bean
+- French Green Lentils
+- Fresh Peas
+- Frijo Bola Roja
+- Frijole Negro
+- Frijoles Refritos
+- Fuji Mame
+- Ful
+- Gandules
+- Garbanzo Bean
+- Garbanzo Pea
+- Garbonzo Bean
+- Gavar Bean
+- Gawar Bean
+- German Lentil
+- Girba Beans
+- Goa Bean
+- GoonGoo Pea
+- Gram Dal
+- Great Northern Bean
+- Green Beans
+- Green Gram
+- Green Lentil
+- Green Matar Dal
+- Green Pea
+- Green Split Pea
+- Griffonia simplicifolia
+- Guar Bean
+- Gunga Pea
+- Gungo Pea
+- Guvar Bean
+- Haba
+- Habas
+- Haricot Bean
+- Haricot Blanc Bean
+- Haricot Vert
+- Homes
+- Hommus
+- Hummus
+- Houmous
+- Humos
+- Horse Bean
+- Horse Gram
+- Hyacinth Bean
+- Indian Bean
+- Indian Brown Lentil
+- Italian Flat Bean
+- Itchy Bean
+- Jackson Wonder Bean
+- Jacob's Cattle Bean
+- Java Bean
+- Jicama
+- Kabli Chana
+- Kabul Channa
+- Kala Channa
+- Kali Dal
+- Kidney Bean
+- Krame
+- Kawo Krua
+- Kudzu
+- Lablab Bean
+- Lentils
+- Lentilles Du Puy
+- Licorice
+- Lima Bean
+- Lingot Bean
+- Licorice
+- Lobhia
+- Lobia
+- Locust Bean
+- Long Bean
+- Lupini Bean
+- Madagascar Bean
+- Maicoba Bean
+- Maine Yellow Eye
+- Mange-tout Pea
+- Manila Bean
+- Marrow Bean
+- Masar
+- Masar Dal
+- Masoor
+- Masoor Dal
+- Masur Dal
+- Matki
+- Mauritius Bean
+- Mayocoba Bean
+- Mexican Black Bean
+- Mexican Red Bean
+- Mimosa Bush
+- Mimosa Wattle
+- Moath
+- Molasses Face Bean
+- Moong Dal
+- Mortgage Lifter Bean
+- Moth Dal
+- Mucuna Pruriens
+- Mung Bean
+- Mung Pea
+- Mungo Bean
+- Mussoor Dal
+- Navy Bean
+- Needle Bush
+- Nescaf
+- No Eyed Peas
+- Orca Bean
+- P De Mico
+- Peas
+- Pea Bean
+- Peanuts
+- Pearl Haricot
+- Peruano Bean
+- Peruvian Bean
+- Petite Beluga Lentil
+- Picapica
+- Pigeon Pea
+- Pink Bean
+- Pois Chiches
+- Poor Mans Pea
+- Prince Bean
+- Princess Pea
+- Pueraria Mirifica
+- Purple Appaloosa Bean
+- Puy Lentil
+- Rajma
+- Rattlesnake Bean
+- Red Ball Bean
+- Red Bean
+- Red Chori
+- Red Eye Bean
+- Red Kidney Bean
+- Red Lentil
+- Red Oriental Bean
+- Refried Beans
+- Rice Bean
+- Roman Bean
+- Romano Bean
+- Rooibos
+- Rosecoco Bean
+- Runner Bean
+- Salted Black Bean
+- Salty Black Bean
+- Saluggia
+- Salugia Bean
+- Sator
+- Scarlet Runner Bean
+- Setae Siliquae Hirsutae
+- Senna
+- Shell Bean
+- Sicklepod
+- Singkamas
+- Small Red Bean
+- Small White Bean
+- Snap Bean
+- Snap pea
+- Snow Peas
+- Southern Pea
+- Soy Bean
+- Soya Bean
+- Soybean
+- Spanish Black Bean
+- Spanish Tolosana Bean
+- Speckled Brown Cow Bean
+- Split Pea
+- Steuben Yellow Bean
+- Steuben Yellow Eye Bean
+- Stizolobium Pruriens
+- String Bean
+- Sugar Pea
+- Sugar Snap Pea
+- Swedish Brown Bean
+- Sweet Acacia
+- Sweet Bean
+- Tamarind
+- Tapary Bean
+- Tepary Bean
+- Thailand Long Bean
+- Tic Beans
+- Tiensin Red Bean
+- Tolosana Bean
+- Tofu
+- Tongues Of Fire Bean
+- Toor
+- Toor Dal
+- Tremmocos
+- Trout Bean
+- Tur
+- Tur Dal
+- Turtle Bean
+- Turtle Soup Bean
+- Tuvar
+- Tuvar Dal
+- Urad Dal
+- Val
+- Val Dal
+- Vallarta Bean
+- Velvet Bean
+- Vetch Family
+- Wattle
+- Wax Bean
+- White Bean
+- White Chickpea
+- White Kidney Bean
+- White Lentil
+- White Pea Bean
+- Windsor Bean
+- Winged Bean
+- Winged Pea
+- Yankee Bean
+- Yard Long Bean
+- Yellow Indian Woman Bean
+- Yellow Lentil
+- Yellow Matar Dal
+- Yellow Pea
+- Yellow Eyed Pea
+- Yin Yang Bean
+- Bitter Gourd
+- Bitter Melon
+- Blueberries
+- Garden Egg
+- Black Tea
+- Acesulfame Potassium
+- Food Coloring
+- Acacia gum
+- Green Tea
+- Tonic Water
+- Bos Taurus Domesticus
+- Calculus Bovis
+- Chimonanthus
+- Gan Cao
+- Ginseng
+- Gynostemma Pentaphyllum
+- Huang Lien/Lian
+- Kam Ngan Fa
+- Leh Mei Hua
+- Licorice
+- Lonicera Japonica
+- Margarita Neu Hang
+- Pearl Powder
+- Methylene Blue
+- FD&C Blue No. 1
+- FD&C Blue No. 2
+- Toluidine Blue
+- Tartrazine
+- Quinoline yellow
+- Yellow 2G
+- Synthetic Yellow Azo Dye
+- Sunset Yellow FCF
+- Orange Yellow S
+- Cochineal
+- Carminic acid
+- Carmines
+- Natural Red 4
+- Orcein
+- Orchil
+- Azorubine
+- Carmoisine
+- Amaranth
+- FD&C Red 2
+- Ponceau 4R
+- Cochineal Red A
+- Brilliant Scarlet 4R
+- Ponceau SX
+- Ponceau 6R
+- Erythrosine
+- FD&C Red 3
+- Red 2G
+- Allura Red AC
+- FD&C Red 40
+- Indanthrene Blue RS
+- Patent Blue V
+- Indigo Carmine
+- Indigotine, Blue 2
+- Brilliant Blue FCF; FDC Blue
+- Copper Complexes of Chlorophyll
+- Greens S
+- Black PN
+- Brilliant
+- Black BN
+- Brown FK
+- Kipper Brown
+- Brown HT
+- Chocolate Brown HT
+- Litholrubine BK
+- Pigment Rubine
+- Sodium Sorbate
+- Potassium Sorbate
+- Calcium Sorbate
+- Epoxy Novolac Acrylate
+- Soyabean Oil-Based Epoxy Acrylate
+- Soluble Oil (emuslion)
+- Molybdate Red
+- Butyl Paraben
+- Benzoic Acid
+- Sodium Benzoate
+- Potassium Benzoate
+- Calcium Benzoate
+- Ethylparaben
+- Sodium Ethyl Para-Hydorxybenzoate
+- Propylparaben
+- Sodium Propyl P-Hydroxybenzoate
+- Methyl Paraben
+- Sodium Methyl Para-Hydroxybenzoate
+- Hexamethylenetetramine
+- Formaldehyde
+- Gum Guaicum
+- Dimethyl Dicarbonate
+- Ascorbic Acid
+- Ascorbyl Palmitate
+- Tocopherols (Vitamin E, Soy)
+- Tocopherol, Gamma, Synthetic
+- Tocopherol, Delta-, Synthetic
+- Propyl Gallate
+- Octyl Gallate
+- Dodecyl Gallate
+- Ethyl Gallate
+- Erythorbic Acid
+- Isoascorbic Acid
+- Sodium Erythorbate
+- Calcium Isoascorbate
+- Sodium Erythorbate
+- BHT
+- Tertiary Butylhydroquinone
+- Butylated Hydroxyanisole
+- Butylated Hydroxytoluene
+- 4-Heptonolactone
+- triammonium Citrate
+- Ammonium Ferric Citrate
+- Disodium Ethylene Diamine Tetraacetate (Disodium EDTA)
+- Thiodipropionic Acid
+- Carob Bean Gum
+- Guar Gum
+- Thermally Oxidized Soya Bean Oil
+- Dioctyl Sodium Sulfosuccinate
+- Glutamic Acid, L(+)
+- Monosodium L-Glutamate
+- Monopotassium L-Glutamate
+- Calcium DI-L-Glutamate
+- MonoAmmonium L-Glutamate
+- Magnesium DI-L-Glutamate
+- Microcrystalline Wax (Paraffin-related)
+- Metalworking Coolant and Lubricant
+- Benzoyl Peroxide
+- Dichlordifluormetan
+- IsoButane
+- Propane
+- Acesulfame Potassium
+- Aspartame
+- Aspartame-Acesulfame Salt
+- Hydrocarbon Resin
+- Polyvinyl Chloride
+- Castor Oil
+- FD&C Dyes
+- Henna
+- Moth Balls
+- Tobacco Smoke
+- Acacia Gum
+- Albumin - from peas
+- Arabic Gum
+- Carob Bean
+- Carob Bean Gum
+- Emulsifiers
+- Flavoring
+- Gelatin
+- Guar Gum
+- Gum Arabic
+- Lecithin
+- Locust Bean Gum
+- MSG
+- Monosodium Glutamate
+- Soy Lecithin
+- Tara Seed Gum
+- Tragacanth
+- Vegetable Broth (soy/fava)
+- Vegetable Emulsifier
+- Vegetable Gelatin
+- Vegetable Glycerine
+- Vegetable Stabilizer
+- Acesulfam Potassium
+- Potassium bisulphite
+- Potassium metabisulphite
+- Sodium bisulphite
+- Sodium dithionite
+- Sodium metabisulphite
+- Disodium sulphite
+- Sulfite
+- Sulfur dioxide
+- Sulphiting agents
+- Sulphurous acid
+- Abura-Age
+- Aburage
+- Aka Miso
+- Akamiso
+- Attu-Age
+- Atsuage
+- AwasMiso
+- Bamboo Yuba
+- Barley Miso
+- Bean Cheese
+- Bean Curd
+- Bean Curd Sheets
+- Bean Curd Skins
+- Bean Curd Stick
+- Bean Paste
+- Bean Sauce
+- Bean Stick
+- Brown RicMiso
+- ChinesYuba
+- Dark Miso
+- Deep Fat Fried Tofu
+- Deep-Fried Tofu
+- Doufu
+- Dow Fu Kon
+- Dried Bean Curd Stick
+- Dried Bean Stick
+- Extra-Firm Tofu
+- Fermented Bean Cake
+- Fermented Bean Curd
+- Fermented Soy Cheese
+- Firm Tofu
+- Foo Yu
+- Fried Bean Curd
+- Fu Jook Pei
+- Fu Yi
+- Fu Yu
+- Genmai Miso
+- Hat-Cho Miso
+- Hatcho Miso
+- Inaka Miso
+- InariagKinu-Goshi
+- Kirazu
+- Kyoto Shiro Miso
+- MamMiso
+- Mamemiso
+- Medium Tofu
+- Mellow WhitMiso
+- Miso
+- Mugi Miso
+- Nama Nori San
+- Nama-Age
+- Nato
+- Natto
+- Nattou
+- Okara
+- Plant Protein Preserved Bean Curd
+- Pressed Tofu Protein Crumbles
+- Red Miso
+- Regular Tofu Roasted Soybeans
+- Sendai Miso
+- Shinshu Miso
+- Shiro Miso
+- Shiromiso
+- Silken Tofu
+- Soft Tofu
+- Cheese
+- Mayonnaise
+- Milk
+- Soy Nut Butter
+- Soy Nuts
+- Sour Cream
+- Yogurt
+- Soybean Curd
+- Soybean Paper
+- Soybean Paste
+- Sui-Doufu
+- Sweet Miso
+- Sweet WhitMiso Tempe
+- Tempeh
+- Textured Soy Protein or TSP
+- Textured Vegetable Protein
+- Texturized Soy Protein
+- Texturized Vegetable
+- Protein Tofu
+- Tofu Products
+- Uba or Yuba
+- Unohana
+- Usu-Age
+- Usuage
+- Wet Bean Curd
+- White Miso
+- Yellow Miso
+- Cheese Substitute
+- Dairy-Free Products
+- Infant Formula (Duto Soy)
+- Low Fat Cheese
+- Margarine
+- Protein Powder (Duto/Plant)
+- Salad Dressings (soybean oil)
+- Worcestire
+- Sweet & Sour
+- Fish Sauce
+- Duck Sauce
+- Smoked and Prepared Meats
+- Soup Broth / Soup Stock
+- Tofu
+- HTP
+- Ascorbic Acid
+- Astragalus
+- Blueberries
+- High Dose Calcium
+- Fenugreek
+- Fucoxanthin
+- Gingko Biloba
+- GrapSeed
+- Green Tea
+- Griffonia simplicifolia
+- Gynostemma
+- Horse chestnut
+- Licoric
+- L DOPA
+- Blueberries
+- Calcium
+- Fucoxanthin
+- Gingko Biloba
+- Theanine
+- Mucuna Pruriens
+- Papaya Leaf
+- Polydatin
+- Polyphenols
+- Pueraria Mirifica
+- Resveratrol
+- Vitamin K
+- Shatavari
+- Soy-based vitamins
+- Tribulus
+- White Oleander
+- Yucca Glauca
+- Yucca Shidigera
+- Acetaminophen
+- Acetanilid
+- Acetylphenylhydrazine
+- Aminophenazone
+- Antazoline
+- Antibiotic Chloramphenicol
+- Antipyrine
+- Ascorbic Acid
+- Aspirin
+- Astemizole
+- Avlosulfon
+- Beta-Naphthol
+- Celebrex
+- Chloramphenicol
+- ChlorinDioxide
+- ChlorinPeroxide
+- Chloroquine
+- Ciprofloxacin
+- Colchicine
+- Dapsone
+- Dimercaprol
+- Diphenhydramine
+- Diseptyl Sulfatrim
+- Dopamine
+- Doxorubicin
+- Ethanol
+- Furazolidone
+- Furosemide
+- Gadopentetate Dimeglunine
+- Resveratrol
+- Saponins
+- Glucosulfone
+- Glyburide
+- Henna
+- Ibuprofen
+- Ibuprophen
+- Iron Supplements/Injections
+- Isobutyl Nitrite
+- Isoniazid
+- Lamotrigine
+- Levofloxacin
+- Lisinopril
+- Macrodantin
+- Magnevist
+- Meadiol Sodium Sulfate
+- Mefloquine
+- MenadiolSodium Bisulfite
+- Menadione
+- Mesalazine
+- Metamizole
+- Metformin
+- Mirtazapine
+- Moxifloxacin
+- Nalidixic Acid
+- Naphthalene
+- Nimesulide
+- Niridazole
+- Nitrofurantoin
+- Nitrofurazone
+- Norfloxacin
+- NSAIDS
+- Oxidate, Urate
+- Pamaquine
+- Para-Aminobenzoic Acid
+- Paracetamol
+- Pefloxacin
+- Pentaquine
+- Petrochemicals
+- Phenacetin
+- Phenazopyridine
+- Phenylbutazone
+- Phenylhydrazine
+- Phenytoin
+- Primaquine
+- Probenecid
+- Procainamide
+- Proguanil
+- Pyrimethamine
+- Quinacrine
+- Quinidine
+- Quinine
+- Quinolones
+- Rasburicase
+- Rasburicase
+- Resprim
+- Sedural
+- Septrin
+- Stibophen
+- Streptomycin
+- Sulfa drugs
+- Sulfacetamide
+- Sulfacytine
+- Sulfadiazine
+- Silver Sulfadiazinis
+- Sulfadimidine
+- Sulfafurazole
+- Sulfaguanidine
+- Sulfamerazine
+- Sulfamethoxazole
+- Sulfamethoxypyridazine
+- Sulfanilamide
+- Sulfapyridine
+- Sulfasalazine
+- Sulfathiazole
+- Sulfonylurea
+- Sulfoxone
+- Tamsulosin
+- Tiaprofenic Acid
+- ToluidinBlue
+- Trihexyphenidyl
+- Trimethoprime
+- Trinitrotoluene
+- Tripelennamine
+- Tylenol
+- Uvamin
+- Vitamin K
+- Vitamin K Sodium Bisulfite
+- Vitamin K Sodium Sulfate
 `;
 
 const ADDITIONAL_INSTRUCTIONS = `
 - Translate all text into English before checking for harmful ingredients.
 - Match ingredients case-insensitively (e.g., "Aspirin" matches "aspirin").
 - Include synonyms and scientific names for harmful ingredients in your search.
+- IMPORTANT: Check compound ingredients for harmful components. For example, if an ingredient is "Diclofenac Diethylamine" and "Diethylamine" is on the harmful list, mark it as harmful.
+- Pay special attention to salt forms, derivatives, and compounds that contain harmful ingredients as part of their chemical structure.
+- When an ingredient contains a harmful component in its name (e.g., "Diclofenac Diethylamine" contains "Diethylamine"), include it in the harmful_ingredients list.
 - If the text is blurry, unclear, or ambiguous, return an error instead of guessing.
 - If unsure about an ingredient due to poor image quality or ambiguity, exclude it from the output and flag an error.
 - If the "ingredients" section is incomplete or cut off (e.g., truncated words, missing portions of the list), return an error with the message: "The 'ingredients' section is partially cut off or incomplete."
