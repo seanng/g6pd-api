@@ -1,18 +1,3 @@
-const OUTPUT_FORMAT_WITH_EXPLANATION = `
-{
-  "status": "success" | "error",
-  "message": "<error message if status is 'error', otherwise empty>",
-  "harmful_ingredients": ["<comma-separated list of harmful ingredients>"] | []
-}
-
-The JSON must have:
-1. "status": Must be "success" or "error". "success" indicates that none of the "Error Conditions" are met. "error" indicates that one or more "Error Conditions" are met.
-2. "message": Empty if status is "success", or specific error message if status is "error"
-3. "harmful_ingredients": Array of harmful ingredients found, or empty array if none are found or if there's an error
-
-Do NOT include any explanations, annotations, or additional formatting outside of this JSON structure.
-`;
-
 const ERROR_CONDITIONS = `
 - The image contains no text.
 - Text is too blurry to read.
@@ -174,10 +159,25 @@ const ADDITIONAL_INSTRUCTIONS = `
 - If the "ingredients" section is incomplete or cut off (e.g., truncated words, missing portions of the list), return an error with the message: "The 'ingredients' section is partially cut off or incomplete."
 `;
 
-const INSTRUCTIONS = `
+export const INITIAL_PROMPT = `
+You are an intelligent image parser that reads text from an image containing an ingredient label and identifies whether any of the ingredients are harmful for individuals with G6PD deficiency. The harmful ingredients are listed below in the "Harmful Ingredients" section. You must translate text from multiple languages into English before checking for matches.
+
 Output Format:
 Reply strictly in JSON format as follows:
-${OUTPUT_FORMAT_WITH_EXPLANATION}
+{
+  "status": "success" | "error",
+  "message": "<error message if status is 'error', otherwise empty>",
+  "harmful_ingredients": ["<comma-separated list of harmful ingredients>"] | []
+}
+
+The JSON must have:
+1. "status": Must be "success" or "error". "success" indicates that none of the "Error Conditions" are met. "error" indicates that one or more "Error Conditions" are met.
+2. "message": Empty if status is "success", or specific error message if status is "error"
+3. "harmful_ingredients": Array of harmful ingredients found, or empty array if none are found or if there's an error
+
+Do NOT include any explanations, annotations, or additional formatting outside of this JSON structure.
+Do NOT wrap the JSON in code blocks or markdown formatting.
+Provide ONLY the raw JSON object.
 
 Error Conditions:
 ${ERROR_CONDITIONS}
@@ -189,12 +189,33 @@ Additional Instructions:
 ${ADDITIONAL_INSTRUCTIONS}
 `;
 
-export const INITIAL_PROMPT = `
-You are an intelligent image parser that reads text from an image containing an ingredient label and identifies whether any of the ingredients are harmful for individuals with G6PD deficiency. The harmful ingredients are listed below in the "Harmful Ingredients" section. You must translate text from multiple languages into English before checking for matches.
-
-${INSTRUCTIONS}
-`;
-
 export const RETRY_PROMPT = `
 Your previous response did not follow the required format. Please respond EXACTLY as instructed:
+
+Reply strictly in JSON format as follows:
+{
+  "status": "success" | "error",
+  "message": "<error message if status is 'error', otherwise empty>",
+  "harmful_ingredients": ["<comma-separated list of harmful ingredients>"] | []
+}
+
+IMPORTANT: Do NOT use markdown formatting. Do NOT include code blocks (\`\`\`). Provide ONLY the raw JSON object.
+
+The JSON must have:
+1. "status": Must be "success" or "error"
+2. "message": Empty if status is "success", or specific error message if status is "error"
+3. "harmful_ingredients": Array of harmful ingredients found, or empty array if none are found or if there's an error
+
+Do NOT include any explanations, annotations, or additional formatting outside of this JSON structure.
+Do NOT wrap the JSON in code blocks or markdown formatting.
+Provide ONLY the raw JSON object.
+
+Error Conditions:
+${ERROR_CONDITIONS}
+
+Harmful Ingredients:
+${HARMFUL_INGREDIENTS}
+
+Additional Instructions:
+${ADDITIONAL_INSTRUCTIONS}
 `;

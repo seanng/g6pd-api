@@ -34,10 +34,7 @@ export class ParseService {
         console.log(
           'Detected invalid format, retrying with clearer instructions'
         );
-        responseText = await this.callGeminiApi(
-          imageData,
-          INITIAL_PROMPT + '\n\n' + RETRY_PROMPT
-        );
+        responseText = await this.callGeminiApi(imageData, RETRY_PROMPT);
         result = this.parseResponseText(responseText);
       }
 
@@ -122,11 +119,24 @@ export class ParseService {
     harmful_ingredients: string[];
   } {
     try {
+      // Clean the response text - remove markdown code block formatting if present
+      let cleanedResponseText = responseText.trim();
+
+      // Remove markdown code block format if present (```json ... ```)
+      const codeBlockRegex = /^```(?:json)?\s*([\s\S]*?)```$/;
+      const match = cleanedResponseText.match(codeBlockRegex);
+      if (match && match[1]) {
+        cleanedResponseText = match[1].trim();
+      }
+
+      console.log('Cleaned response for parsing:', cleanedResponseText);
+
       // Try to parse as JSON
       let parsedJson;
       try {
-        parsedJson = JSON.parse(responseText);
+        parsedJson = JSON.parse(cleanedResponseText);
       } catch (e) {
+        console.error('JSON parse error:', e);
         return {
           success: false,
           error: 'Invalid response format from AI',
@@ -136,6 +146,7 @@ export class ParseService {
 
       // Validate the JSON structure
       if (!parsedJson || typeof parsedJson !== 'object') {
+        console.error('Invalid JSON structure:', parsedJson);
         return {
           success: false,
           error: 'Invalid response format from AI',
@@ -147,6 +158,7 @@ export class ParseService {
 
       // Check required fields
       if (status !== 'success' && status !== 'error') {
+        console.error('Invalid status value:', status);
         return {
           success: false,
           error: 'Invalid response format from AI',
@@ -177,6 +189,7 @@ export class ParseService {
         harmful_ingredients: ingredients,
       };
     } catch (e) {
+      console.error('Unexpected error in parseResponseText:', e);
       return {
         success: false,
         error: 'Invalid response format from AI',
