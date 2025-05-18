@@ -952,6 +952,8 @@ const ADDITIONAL_INSTRUCTIONS = `
 - IMPORTANT: Check compound ingredients for harmful components. For example, if an ingredient is "Diclofenac Diethylamine" and "Diethylamine" is on the harmful list, mark it as harmful.
 - Pay special attention to salt forms, derivatives, and compounds that contain harmful ingredients as part of their chemical structure.
 - When an ingredient contains a harmful component in its name (e.g., "Diclofenac Diethylamine" contains "Diethylamine"), include it in the harmful_ingredients list.
+- CRITICAL: Detect foods like Broad Beans, Soramame, Fava Beans, etc. These are particularly dangerous for G6PD-deficient individuals and must be identified even if they appear as minor ingredients, food products, or in product names.
+- Pay close attention to all beans, peas, legumes, and their derivatives in the ingredients list, as many of these are harmful.
 - If the text is blurry, unclear, or ambiguous, return an error instead of guessing.
 - If unsure about an ingredient due to poor image quality or ambiguity, exclude it from the output and flag an error.
 - If the "ingredients" section is incomplete or cut off (e.g., truncated words, missing portions of the list), return an error with the message: "The 'ingredients' section is partially cut off or incomplete."
@@ -959,6 +961,10 @@ const ADDITIONAL_INSTRUCTIONS = `
 
 export const INITIAL_PROMPT = `
 You are an intelligent image parser that reads text from an image containing an ingredient label and identifies whether any of the ingredients are harmful for individuals with G6PD deficiency. The harmful ingredients are listed below in the "Harmful Ingredients" section. You must translate text from multiple languages into English before checking for matches.
+
+CRITICAL: Be diligent in detecting harmful ingredients that appear as components of compound ingredients. For example, "Diclofenac Diethylamine" contains "Diethylamine", which is harmful. Similarly, salt forms (like "Sodium Nitroprusside") or chemical derivatives must be checked against the harmful list.
+
+CRITICAL: Many food items like Broad Beans (also known as Fava Beans, Soramame, etc.) are extremely dangerous for G6PD-deficient individuals. You must identify these even if they appear as part of product names (e.g., "Black sugar broad beans"). These food items are included in the harmful ingredients list.
 
 Output Format:
 ${OUTPUT_FORMAT}
@@ -975,6 +981,10 @@ ${ADDITIONAL_INSTRUCTIONS}
 
 export const RETRY_PROMPT = `
 Your previous response did not follow the required format. Please respond EXACTLY as instructed:
+
+CRITICAL: Be diligent in detecting harmful ingredients that appear as components of compound ingredients. For example, "Diclofenac Diethylamine" contains "Diethylamine", which is harmful. Similarly, salt forms (like "Sodium Nitroprusside") or chemical derivatives must be checked against the harmful list.
+
+CRITICAL: Many food items like Broad Beans (also known as Fava Beans, Soramame, etc.) are extremely dangerous for G6PD-deficient individuals. You must identify these even if they appear as part of product names (e.g., "Black sugar broad beans"). These food items are included in the harmful ingredients list.
 
 ${OUTPUT_FORMAT}
 
