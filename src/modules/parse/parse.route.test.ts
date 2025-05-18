@@ -31,7 +31,7 @@ globalThis.fetch = async () => {
           content: {
             parts: [
               {
-                text: '{"status":"success","message":"","harmful_ingredients":["Acetanilide"]}',
+                text: '{"status":"success","message":"","harmful_ingredients":["Acetanilide"],"original_text":"Ingredientes: sal, azúcar, Acetanilida, agua","translated_text":"Ingredients: salt, sugar, Acetanilide, water"}',
               },
             ],
           },
@@ -70,7 +70,7 @@ Deno.test('ParseRoute tests', async (t) => {
         body: formData,
       });
 
-      assertEquals(res.status, 400);
+      assertEquals(res.status, 422);
       const data = await res.json();
       assertExists(data.message);
     }
@@ -86,7 +86,7 @@ Deno.test('ParseRoute tests', async (t) => {
       body: formData,
     });
 
-    assertEquals(res.status, 400);
+    assertEquals(res.status, 422);
     const data = await res.json();
     assertExists(data.message);
     assertEquals(
@@ -114,6 +114,16 @@ Deno.test('ParseRoute tests', async (t) => {
     assertExists(data.data.harmful_ingredients);
     assertEquals(data.data.harmful_ingredients.length, 1);
     assertEquals(data.data.harmful_ingredients[0], 'Acetanilide');
+    assertExists(data.data.original_text);
+    assertEquals(
+      data.data.original_text,
+      'Ingredientes: sal, azúcar, Acetanilida, agua'
+    );
+    assertExists(data.data.translated_text);
+    assertEquals(
+      data.data.translated_text,
+      'Ingredients: salt, sugar, Acetanilide, water'
+    );
   });
 
   // Add a final cleanup step

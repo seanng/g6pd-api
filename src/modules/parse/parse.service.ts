@@ -1,12 +1,15 @@
 import { HTTPException } from 'hono/http-exception';
 import { encodeBase64 } from 'https://deno.land/std@0.224.0/encoding/base64.ts';
 import { INITIAL_PROMPT, RETRY_PROMPT } from './parse.prompts.ts';
+import { INVALID_RESPONSE_FORMAT_FROM_AI } from '@/parse/parse.errors.ts';
 
 /**
  * Response type for the image parsing operation
  */
 export interface ParseResponse {
   harmful_ingredients: string[];
+  original_text: string;
+  translated_text: string;
 }
 
 /**
@@ -20,7 +23,7 @@ export class ParseService {
    */
   async processImage(image: File | FormDataEntryValue): Promise<ParseResponse> {
     if (!image || !(image instanceof File)) {
-      throw new HTTPException(400, { message: 'Image file is required' });
+      throw new HTTPException(422, { message: 'Image file is required' });
     }
 
     try {
@@ -30,20 +33,34 @@ export class ParseService {
       let result = this.parseResponseText(responseText);
 
       // If the format is invalid, retry with clearer instructions
-      if (result.error === 'Invalid response format from AI') {
+      if (result.error === INVALID_RESPONSE_FORMAT_FROM_AI) {
         console.log(
           'Detected invalid format, retrying with clearer instructions'
         );
         responseText = await this.callGeminiApi(imageData, RETRY_PROMPT);
         result = this.parseResponseText(responseText);
+
+        if (result.error === INVALID_RESPONSE_FORMAT_FROM_AI) {
+          throw new HTTPException(500, {
+            message: INVALID_RESPONSE_FORMAT_FROM_AI,
+          });
+        }
       }
 
       if (!result.success) {
-        throw new HTTPException(400, { message: result.error });
+        throw new HTTPException(400, {
+          message: result.error,
+          cause: {
+            original_text: result.original_text,
+            translated_text: result.translated_text,
+          },
+        });
       }
 
       return {
         harmful_ingredients: result.harmful_ingredients,
+        original_text: result.original_text,
+        translated_text: result.translated_text,
       };
     } catch (error) {
       console.error('Error processing image parse request:', error);
@@ -117,6 +134,8 @@ export class ParseService {
     success: boolean;
     error: string;
     harmful_ingredients: string[];
+    original_text: string;
+    translated_text: string;
   } {
     try {
       // Clean the response text - remove markdown code block formatting if present
@@ -139,8 +158,10 @@ export class ParseService {
         console.error('JSON parse error:', e);
         return {
           success: false,
-          error: 'Invalid response format from AI',
+          error: INVALID_RESPONSE_FORMAT_FROM_AI,
           harmful_ingredients: [],
+          original_text: '',
+          translated_text: '',
         };
       }
 
@@ -149,20 +170,30 @@ export class ParseService {
         console.error('Invalid JSON structure:', parsedJson);
         return {
           success: false,
-          error: 'Invalid response format from AI',
+          error: INVALID_RESPONSE_FORMAT_FROM_AI,
           harmful_ingredients: [],
+          original_text: '',
+          translated_text: '',
         };
       }
 
-      const { status, message, harmful_ingredients } = parsedJson;
+      const {
+        status,
+        message,
+        harmful_ingredients,
+        original_text,
+        translated_text,
+      } = parsedJson;
 
       // Check required fields
       if (status !== 'success' && status !== 'error') {
         console.error('Invalid status value:', status);
         return {
           success: false,
-          error: 'Invalid response format from AI',
+          error: INVALID_RESPONSE_FORMAT_FROM_AI,
           harmful_ingredients: [],
+          original_text: '',
+          translated_text: '',
         };
       }
 
@@ -175,6 +206,8 @@ export class ParseService {
           success: false,
           error: message,
           harmful_ingredients: [],
+          original_text: original_text || '',
+          translated_text: translated_text || '',
         };
       }
 
@@ -187,13 +220,17 @@ export class ParseService {
         success: isSuccess,
         error: message || 'Unknown error',
         harmful_ingredients: ingredients,
+        original_text: original_text || '',
+        translated_text: translated_text || '',
       };
     } catch (e) {
       console.error('Unexpected error in parseResponseText:', e);
       return {
         success: false,
-        error: 'Invalid response format from AI',
+        error: INVALID_RESPONSE_FORMAT_FROM_AI,
         harmful_ingredients: [],
+        original_text: '',
+        translated_text: '',
       };
     }
   }

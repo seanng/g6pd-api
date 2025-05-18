@@ -9,6 +9,7 @@ import {
 } from 'https://deno.land/std@0.224.0/assert/mod.ts';
 import { ParseService } from './parse.service.ts';
 import { HTTPException } from 'hono/http-exception';
+import { INVALID_RESPONSE_FORMAT_FROM_AI } from '@/parse/parse.errors.ts';
 
 // Mock the dotenv module
 // This needs to happen before importing the service
@@ -53,7 +54,7 @@ Deno.test('ParseService tests', async (t) => {
                 content: {
                   parts: [
                     {
-                      text: '{"status":"success","message":"","harmful_ingredients":[]}',
+                      text: '{"status":"success","message":"","harmful_ingredients":[],"original_text":"Ingredientes: Harina de trigo, azúcar, sal.","translated_text":"Ingredients: Wheat flour, sugar, salt."}',
                     },
                   ],
                 },
@@ -69,6 +70,14 @@ Deno.test('ParseService tests', async (t) => {
 
       const result = await parseService.processImage(fakeFile);
       assertEquals(result.harmful_ingredients, []);
+      assertEquals(
+        result.original_text,
+        'Ingredientes: Harina de trigo, azúcar, sal.'
+      );
+      assertEquals(
+        result.translated_text,
+        'Ingredients: Wheat flour, sugar, salt.'
+      );
     }
   );
 
@@ -85,7 +94,7 @@ Deno.test('ParseService tests', async (t) => {
                 content: {
                   parts: [
                     {
-                      text: '{"status":"success","message":"","harmful_ingredients":["Acetanilide","Acetazolamide"]}',
+                      text: '{"status":"success","message":"","harmful_ingredients":["Acetanilide","Acetazolamide"],"original_text":"Ingredientes: Harina de trigo, acetanilida, acetazolamida, sal.","translated_text":"Ingredients: Wheat flour, acetanilide, acetazolamide, salt."}',
                     },
                   ],
                 },
@@ -104,6 +113,14 @@ Deno.test('ParseService tests', async (t) => {
         'Acetanilide',
         'Acetazolamide',
       ]);
+      assertEquals(
+        result.original_text,
+        'Ingredientes: Harina de trigo, acetanilida, acetazolamida, sal.'
+      );
+      assertEquals(
+        result.translated_text,
+        'Ingredients: Wheat flour, acetanilide, acetazolamide, salt.'
+      );
     }
   );
 
@@ -120,7 +137,7 @@ Deno.test('ParseService tests', async (t) => {
                 content: {
                   parts: [
                     {
-                      text: '{"status":"error","message":"Text is too blurry to read","harmful_ingredients":[]}',
+                      text: '{"status":"error","message":"Text is too blurry to read","harmful_ingredients":[],"original_text":"","translated_text":""}',
                     },
                   ],
                 },
@@ -176,7 +193,7 @@ Deno.test('ParseService tests', async (t) => {
                   content: {
                     parts: [
                       {
-                        text: '{"status":"success","message":"","harmful_ingredients":[]}',
+                        text: '{"status":"success","message":"","harmful_ingredients":[],"original_text":"Whole grain wheat, sugar, salt.","translated_text":"Whole grain wheat, sugar, salt."}',
                       },
                     ],
                   },
@@ -193,6 +210,47 @@ Deno.test('ParseService tests', async (t) => {
 
       const result = await parseService.processImage(fakeFile);
       assertEquals(result.harmful_ingredients, []);
+      assertEquals(result.original_text, 'Whole grain wheat, sugar, salt.');
+      assertEquals(result.translated_text, 'Whole grain wheat, sugar, salt.');
+      assertEquals(callCount, 2, 'API should be called twice due to retry');
+    }
+  );
+
+  await t.step(
+    'processImage should throw if retry still produces invalid format',
+    async () => {
+      // Set up mocks with sequential responses
+      let callCount = 0;
+      globalThis.fetch = async () => {
+        callCount++;
+        // Both calls return invalid format
+        return {
+          ok: true,
+          json: async () => ({
+            candidates: [
+              {
+                content: {
+                  parts: [
+                    {
+                      text: 'I found the following ingredients: Whole grain wheat, sugar, salt.',
+                    },
+                  ],
+                },
+              },
+            ],
+          }),
+        } as Response;
+      };
+
+      const fakeFile = new File([new Uint8Array([1, 2, 3])], 'test.jpg', {
+        type: 'image/jpeg',
+      });
+
+      await assertRejects(
+        () => parseService.processImage(fakeFile),
+        HTTPException,
+        INVALID_RESPONSE_FORMAT_FROM_AI
+      );
       assertEquals(callCount, 2, 'API should be called twice due to retry');
     }
   );

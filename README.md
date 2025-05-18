@@ -54,7 +54,9 @@ This is a sample API built with Hono and Deno, structured similarly to NestJS pr
     {
       "success": true,
       "data": {
-        "harmful_ingredients": ["Ingredient1", "Ingredient2"]
+        "harmful_ingredients": ["Ingredient1", "Ingredient2"],
+        "original_text": "Ingredientes: agua, Ingrediente1, Ingrediente2, sal",
+        "translated_text": "Ingredients: water, Ingredient1, Ingredient2, salt"
       }
     }
     ```

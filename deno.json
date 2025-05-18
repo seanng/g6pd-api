@@ -8,6 +8,7 @@
   "tasks": {
     "start": "deno run --allow-net --allow-env --allow-read src/main.ts",
     "test": "deno test --allow-env",
+    "test:watch": "deno test --allow-env --watch",
     "dev": "deno run --allow-net --allow-env --allow-read --watch src/main.ts"
   },
   "compilerOptions": {

@@ -43,7 +43,7 @@ parseRoute.post(
       const errorMessage = result.error.errors
         .map((err: any) => err.message)
         .join(', ');
-      throw new HTTPException(400, { message: errorMessage });
+      throw new HTTPException(422, { message: errorMessage });
     }
   }) as any,
   async (c) => {
@@ -57,6 +57,8 @@ parseRoute.post(
         success: true,
         data: {
           harmful_ingredients: result.harmful_ingredients,
+          original_text: result.original_text,
+          translated_text: result.translated_text,
         },
       });
     } catch (error: unknown) {
