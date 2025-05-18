@@ -112,6 +112,7 @@ export class ParseService {
     const result = await response.json();
 
     const text = result.candidates[0].content.parts[0].text;
+    console.log('text from ai: ', text);
     return text;
   }
 
