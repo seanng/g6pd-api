@@ -36,7 +36,7 @@ export class ParseService {
         );
         responseText = await this.callGeminiApi(
           imageData,
-          INITIAL_PROMPT + RETRY_PROMPT
+          INITIAL_PROMPT + '\n\n' + RETRY_PROMPT
         );
         result = this.parseResponseText(responseText);
       }

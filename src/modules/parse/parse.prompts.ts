@@ -197,6 +197,4 @@ ${INSTRUCTIONS}
 
 export const RETRY_PROMPT = `
 Your previous response did not follow the required format. Please respond EXACTLY as instructed:
-
-${INSTRUCTIONS}
 `;
