@@ -51,9 +51,14 @@ parseRoute.post(
       const { image } = (c as any).req.valid('form') as { image: File };
 
       // Use the service instance to process the image
-      const data = await parseService.processImage(image);
+      const result = await parseService.processImage(image);
 
-      return c.json({ success: true, data });
+      return c.json({
+        success: true,
+        data: {
+          harmful_ingredients: result.harmful_ingredients,
+        },
+      });
     } catch (error: unknown) {
       console.error('Error in /parse route:', error);
       if (error instanceof HTTPException) {

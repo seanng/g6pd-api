@@ -41,7 +41,7 @@ Deno.test('ParseService tests', async (t) => {
   });
 
   await t.step(
-    'processImage should handle successful API response',
+    'processImage should handle successful API response with no harmful ingredients',
     async () => {
       // Mock successful API response
       globalThis.fetch = async () => {
@@ -53,7 +53,7 @@ Deno.test('ParseService tests', async (t) => {
                 content: {
                   parts: [
                     {
-                      text: 'success\n---\n\n---\nIngredients: Whole grain wheat, sugar, salt.',
+                      text: '{"status":"success","message":"","harmful_ingredients":[]}',
                     },
                   ],
                 },
@@ -68,7 +68,42 @@ Deno.test('ParseService tests', async (t) => {
       });
 
       const result = await parseService.processImage(fakeFile);
-      assertEquals(result, 'Ingredients: Whole grain wheat, sugar, salt.');
+      assertEquals(result.harmful_ingredients, []);
+    }
+  );
+
+  await t.step(
+    'processImage should handle successful API response with harmful ingredients',
+    async () => {
+      // Mock successful API response with harmful ingredients
+      globalThis.fetch = async () => {
+        return {
+          ok: true,
+          json: async () => ({
+            candidates: [
+              {
+                content: {
+                  parts: [
+                    {
+                      text: '{"status":"success","message":"","harmful_ingredients":["Acetanilide","Acetazolamide"]}',
+                    },
+                  ],
+                },
+              },
+            ],
+          }),
+        } as Response;
+      };
+
+      const fakeFile = new File([new Uint8Array([1, 2, 3])], 'test.jpg', {
+        type: 'image/jpeg',
+      });
+
+      const result = await parseService.processImage(fakeFile);
+      assertEquals(result.harmful_ingredients, [
+        'Acetanilide',
+        'Acetazolamide',
+      ]);
     }
   );
 
@@ -85,7 +120,7 @@ Deno.test('ParseService tests', async (t) => {
                 content: {
                   parts: [
                     {
-                      text: 'error\n---\nText is too blurry\n---\n',
+                      text: '{"status":"error","message":"Text is too blurry to read","harmful_ingredients":[]}',
                     },
                   ],
                 },
@@ -102,7 +137,7 @@ Deno.test('ParseService tests', async (t) => {
       await assertRejects(
         () => parseService.processImage(fakeFile),
         HTTPException,
-        'Text is too blurry'
+        'Text is too blurry to read'
       );
     }
   );
@@ -141,7 +176,7 @@ Deno.test('ParseService tests', async (t) => {
                   content: {
                     parts: [
                       {
-                        text: 'success\n---\n\n---\nWhole grain wheat, sugar, salt.',
+                        text: '{"status":"success","message":"","harmful_ingredients":[]}',
                       },
                     ],
                   },
@@ -157,7 +192,7 @@ Deno.test('ParseService tests', async (t) => {
       });
 
       const result = await parseService.processImage(fakeFile);
-      assertEquals(result, 'Whole grain wheat, sugar, salt.');
+      assertEquals(result.harmful_ingredients, []);
       assertEquals(callCount, 2, 'API should be called twice due to retry');
     }
   );

@@ -31,7 +31,7 @@ globalThis.fetch = async () => {
           content: {
             parts: [
               {
-                text: 'success\n---\n\n---\nIngredients: Test ingredients',
+                text: '{"status":"success","message":"","harmful_ingredients":["Acetanilide"]}',
               },
             ],
           },
@@ -110,7 +110,10 @@ Deno.test('ParseRoute tests', async (t) => {
     assertEquals(res.status, 200);
     const data = await res.json();
     assertEquals(data.success, true);
-    assertEquals(data.data, 'Ingredients: Test ingredients');
+    assertExists(data.data);
+    assertExists(data.data.harmful_ingredients);
+    assertEquals(data.data.harmful_ingredients.length, 1);
+    assertEquals(data.data.harmful_ingredients[0], 'Acetanilide');
   });
 
   // Add a final cleanup step
